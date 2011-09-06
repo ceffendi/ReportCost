@@ -1,5 +1,6 @@
 
 import com.provident.model.Cost;
+import com.provident.model.Organisasi;
 import com.provident.model.Produksi;
 import com.provident.model.biaya.BiayaProdLangsung;
 import com.provident.model.biaya.BiayaProdTdkLangsung;
@@ -15,6 +16,7 @@ import java.util.Map;
 import net.sf.jxls.exception.ParsePropertyException;
 import net.sf.jxls.transformer.XLSTransformer;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.joda.time.DateTime;
 
 /**
  *
@@ -25,6 +27,9 @@ public class TestCostReport {
     private static String destFileName = "build/cost_report_output.xls";
     
     public static void main(String [] args) throws ParsePropertyException, IOException, InvalidFormatException{
+        
+        DateTime periode = new DateTime(2011, 05, 01, 0, 0);
+        Organisasi org = new Organisasi("LANGGAM inti Hibrida", periode);
         
         Cost nilaiSama = new Cost();
         nilaiSama.setPeriodActual(1000.32);
@@ -77,6 +82,9 @@ public class TestCostReport {
         beans.put("tbs", tbsLuar);        
         beans.put("totProd", totalBiayaProduksi);
         beans.put("totProdAndTbs", totalBiayaAll);
+        
+        //Organisasi
+        beans.put("org", org);
         
         
         XLSTransformer transformer = new XLSTransformer();       
