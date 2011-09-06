@@ -4,6 +4,8 @@ import com.provident.model.Produksi;
 import com.provident.model.biaya.BiayaProdLangsung;
 import com.provident.model.biaya.BiayaProdTdkLangsung;
 import com.provident.model.biaya.BiayaRawatTanam;
+import com.provident.model.biaya.TotalBiayaAll;
+import com.provident.model.biaya.TotalBiayaProd;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,10 +47,19 @@ public class TestCostReport {
         Cost tbsLuar = new Produksi(nilaiSama, nilaiSama);
         
         
+        // Biaya Total
+        Cost totalBiayaProduksi = new TotalBiayaProd(biayaProdLangsung, biayaProdTakLgsung);
+        Cost totalBiayaAll = new TotalBiayaAll(totalBiayaProduksi, tbsLuar);
+        
+        
         Map beans = new HashMap();
         beans.put("pl", biayaProdLangsung);
         beans.put("ptl", biayaProdTakLgsung);
         beans.put("tbs", tbsLuar);
+        
+        beans.put("totProd", totalBiayaProduksi);
+        beans.put("totProdAndTbs", totalBiayaAll);
+        
         
         XLSTransformer transformer = new XLSTransformer();       
         transformer.transformXLS(templateFileName, beans, destFileName);
