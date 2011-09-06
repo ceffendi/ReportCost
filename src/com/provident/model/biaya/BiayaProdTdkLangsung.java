@@ -25,6 +25,45 @@ public class BiayaProdTdkLangsung extends Cost{
     public BiayaProdTdkLangsung() {
     }
 
+    public Cost getHo() {
+        return ho;
+    }
+
+    public void setHo(Cost ho) {
+        this.ho = ho;
+    }
+
+    public Cost getInfra() {
+        return infra;
+    }
+
+    public void setInfra(Cost infra) {
+        this.infra = infra;
+    }
+
+    public Cost getRawat() {
+        return rawat;
+    }
+
+    public void setRawat(Cost rawat) {
+        this.rawat = rawat;
+    }
+
+    public Cost getSisip() {
+        return sisip;
+    }
+
+    public void setSisip(Cost sisip) {
+        this.sisip = sisip;
+    }
+
+    public Cost getSite() {
+        return site;
+    }
+
+    public void setSite(Cost site) {
+        this.site = site;
+    }
 
     @Override
     public double getMasterBudget() {

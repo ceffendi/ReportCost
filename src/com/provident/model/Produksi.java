@@ -16,6 +16,13 @@ public class Produksi extends Cost{
         this.inti = inti;
     }
 
+    public Produksi(Cost plasma, Cost pihak3) {
+        this.plasma = plasma;
+        this.pihak3 = pihak3;
+        this.inti = new Cost();
+    }    
+    
+
     public Produksi() {
     }
 
