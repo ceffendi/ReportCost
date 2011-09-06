@@ -4,7 +4,7 @@ package com.provident.model;
  *
  * @author Christian
  */
-public class Produksi extends Cost{
+public class Produksi extends Cost {
     
     private Cost plasma;
     private Cost pihak3;

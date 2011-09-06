@@ -1,12 +1,11 @@
 package com.provident.model.biaya;
 
 import com.provident.model.Cost;
-
 /**
  *
  * @author Christian
  */
-public class BiayaProdTdkLangsung extends Cost{
+public class BiayaProdTdkLangsung extends Cost {
     
     private Cost sisip;
     private Cost infra;
