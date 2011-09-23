@@ -25,7 +25,8 @@ public class ReportCost extends javax.swing.JFrame {
     private static Logger log = Logger.getLogger(ReportCost.class);
     
     private String [] perusahaan;
-    private String [] bulan = {"Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","Sepetmber","Oktober","November","Desember"};
+    private String [] inisialPerusahaan;
+    private String [] bulan = {"Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"};
    
     /** Creates new form ReportCost */
     public ReportCost() {
@@ -40,6 +41,7 @@ public class ReportCost extends javax.swing.JFrame {
     private void initialize(){
         Properties config = DBConnection.loadProperties("config.properties");
         perusahaan = config.getProperty("perusahaan").split(",");
+        inisialPerusahaan = config.getProperty("company").split(",");
         
         DateTime now = new DateTime();
         for(int i=0; i<5; i++){
@@ -162,17 +164,24 @@ private void btnProsesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIR
             
             report = new CostPerformance(db.getConnection(), 
                             cboPerusahaan.getSelectedItem().toString(), 
-                            cboBulan.getSelectedItem().toString(), 
-                            Integer.parseInt(cboTahun.getSelectedItem().toString()));
+                            cboBulan.getSelectedIndex() + 1, 
+                            Integer.parseInt(cboTahun.getSelectedItem().toString()),
+                            inisialPerusahaan[cboPerusahaan.getSelectedIndex()]);
             
-            report.prosesOutputReport();
-            log.info("Report Selesai Di Create dengan nama file \" " + CostPerformance.destFileName + " \"");
-            JOptionPane.showMessageDialog(null, "Report Selesai. Silakan lihat hasilnya di \" " + CostPerformance.destFileName + " \" ", "Information", JOptionPane.INFORMATION_MESSAGE);
+            if(db.getConnection() != null){
+                
+                report.prosesOutputReport();
+                log.info("Report Selesai Di Create dengan nama file \" " + CostPerformance.destFileName + " \"");
+                JOptionPane.showMessageDialog(null, "Report Selesai. Silakan lihat hasilnya di \" " + CostPerformance.destFileName + " \" ", "Information", JOptionPane.INFORMATION_MESSAGE);
+            
+            }
         } catch (ParsePropertyException ex) {
             log.error(ex.getMessage(), ex);
         } catch (IOException ex) {
             log.error(ex.getMessage(), ex);
         } catch (InvalidFormatException ex) {
+            log.error(ex.getMessage(), ex);
+        } catch(Exception ex){
             log.error(ex.getMessage(), ex);
         }
         
