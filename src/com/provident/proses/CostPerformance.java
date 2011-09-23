@@ -105,9 +105,9 @@ public class CostPerformance {
         //Cost Transport Panen
         Cost transportPanen = new Cost();
         transportPanen.setPeriodActual(query.getCostTransportPanen(periodeTahun, true));
-        transportPanen.setPeriodPrvActual(query.getCostPanen(periodeTahun - 1, true));
-        transportPanen.setYearActual(query.getCostPanen(periodeTahun, false));
-        transportPanen.setYearPrvActual(query.getCostPanen(periodeTahun - 1, false));
+        transportPanen.setPeriodPrvActual(query.getCostTransportPanen(periodeTahun - 1, true));
+        transportPanen.setYearActual(query.getCostTransportPanen(periodeTahun, false));
+        transportPanen.setYearPrvActual(query.getCostTransportPanen(periodeTahun - 1, false));
 
         //Cost Aktivitas Pabrik
         Cost actPabrik = new Cost();

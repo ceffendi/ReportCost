@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import org.apache.log4j.Logger;
 
 /**
@@ -63,7 +64,7 @@ public class QueryData {
             psmt = null;
             rs = null;
         }
-        return costPanen;
+        return decimalPoint(costPanen);
     }
 
     public double getCostTransportPanen(int tahun, boolean isPeriodic) {
@@ -106,7 +107,7 @@ public class QueryData {
             psmt = null;
             rs = null;
         }
-        return costTransportPanen;
+        return decimalPoint(costTransportPanen);
     }
     
     public double getCostActPabrik(int tahun, boolean isPeriodic) {
@@ -149,7 +150,7 @@ public class QueryData {
             psmt = null;
             rs = null;
         }
-        return nilai;
+        return decimalPoint(nilai);
     }
     
     public double getCostTenagaKerja(int tahun, boolean isPeriodic) {
@@ -192,7 +193,7 @@ public class QueryData {
             psmt = null;
             rs = null;
         }
-        return nilai;
+        return decimalPoint(nilai);
     }
     
     public double getCostSisipSawit(int tahun, boolean isPeriodic) {
@@ -235,7 +236,7 @@ public class QueryData {
             psmt = null;
             rs = null;
         }
-        return nilai;
+        return decimalPoint(nilai);
     }
     
     private String putZero(int periodeBulan){
@@ -245,4 +246,9 @@ public class QueryData {
         return String.valueOf(periodeBulan);
     }   
     
+    private double decimalPoint(double nilai){
+        nilai = nilai / 1000.000;
+        DecimalFormat twoDForm = new DecimalFormat("#.##");
+        return Double.valueOf(twoDForm.format(nilai));
+    }    
 }
