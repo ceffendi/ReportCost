@@ -2,9 +2,12 @@ package com.provident.proses;
 
 import com.provident.model.Cost;
 import com.provident.model.Organisasi;
+import com.provident.model.Produksi;
 import com.provident.model.biaya.BiayaProdLangsung;
 import com.provident.model.biaya.BiayaProdTdkLangsung;
 import com.provident.model.biaya.BiayaRawatTanam;
+import com.provident.model.produksi.Cpo;
+import com.provident.model.produksi.Kernel;
 import java.io.IOException;
 import java.sql.Connection;
 import java.util.HashMap;
@@ -62,14 +65,22 @@ public class CostPerformance {
         
         //Biaya Prod Tdk Langsung
         Cost biayaProdTdkLangsung = getBiayaProduksiTidakLangsung();
+        
+        
+        //Produksi Kebun CPO
+        Cpo cpo = getQtyProduksiCpoHead();
+        
+        //Produksi Kebun PK (Kernel)
+        Kernel kernel = getQtyPk();
+        
                
         Map beans = new HashMap();
 
         // Buat Produksi Tonase Kebun
 //        beans.put("ptb", prodTbs);
 //        beans.put("hk", hektarTanam);
-//        beans.put("cpo", cpo);
-//        beans.put("pk", kernel);
+        beans.put("cpo", cpo);
+        beans.put("pk", kernel);
 
 
         // Buat Biaya Produksi - mapping
@@ -158,6 +169,137 @@ public class CostPerformance {
         Cost biayaRawatTanam = new BiayaRawatTanam(tngKerja, new Cost(), new Cost());
         
         return biayaRawatTanam;
+    }
+    
+    
+    private Cpo getQtyProduksiCpoHead(){
+        
+        //QTy TbsOlah
+        Cost tbsOlah = getQtyTbsOlah();
+        
+        //Qty Restan Olah      
+        Cost restan = new Cost();
+        restan.setPeriodActual(query.getTonaseRestanOlah(periodeTahun, true));
+        restan.setPeriodPrvActual(query.getTonaseRestanOlah(periodeTahun-1, true));        
+        restan.setYearActual(query.getTonaseRestanOlah(periodeTahun, false));
+        restan.setYearPrvActual(query.getTonaseRestanOlah(periodeTahun-1, false));
+        
+        //Oty Produksi CPO
+        Cost prodCpo = getQtyProduksiCpoTon();
+        
+        //Qty Rendemen CPO      
+        Cost rendemenCpo = new Cost();
+        rendemenCpo.setPeriodActual(query.getTonaseRendemenCpo(periodeTahun, true));
+        rendemenCpo.setPeriodPrvActual(query.getTonaseRendemenCpo(periodeTahun-1, true));        
+        rendemenCpo.setYearActual(query.getTonaseRendemenCpo(periodeTahun, false));
+        rendemenCpo.setYearPrvActual(query.getTonaseRendemenCpo(periodeTahun-1, false));
+        
+        //Qty Produksi CPO
+        Cpo produksiCpo = new Cpo(tbsOlah, restan, prodCpo, rendemenCpo);
+        
+        return produksiCpo;
+         
+    }
+    
+    private Cost getQtyTbsOlah(){
+        
+        //Produksi CPO TBS Olah
+        Produksi cpoTbsOlah = new Produksi();
+        
+         //Cost Inti
+         Cost inti = new Cost();
+         inti.setPeriodActual(query.getTonaseCpoTbsOlahInti(periodeTahun, true));
+         inti.setPeriodPrvActual(query.getTonaseCpoTbsOlahInti(periodeTahun-1, true));        
+         inti.setYearActual(query.getTonaseCpoTbsOlahInti(periodeTahun, false));
+         inti.setYearPrvActual(query.getTonaseCpoTbsOlahInti(periodeTahun-1, false));
+         
+         //Cost Plasma
+         Cost plasma = new Cost();
+         plasma.setPeriodActual(query.getTonaseCpoTbsOlahPlasma(periodeTahun, true));
+         plasma.setPeriodPrvActual(query.getTonaseCpoTbsOlahPlasma(periodeTahun-1, true));        
+         plasma.setYearActual(query.getTonaseCpoTbsOlahPlasma(periodeTahun, false));
+         plasma.setYearPrvActual(query.getTonaseCpoTbsOlahPlasma(periodeTahun-1, false));
+         
+         
+       cpoTbsOlah.setInti(inti);
+       cpoTbsOlah.setPlasma(plasma);
+       cpoTbsOlah.setPihak3(new Cost());
+       
+       return cpoTbsOlah;
+    }
+    
+    private Cost getQtyProduksiCpoTon(){
+        
+        //Produksi CPO (Ton)
+        Produksi cpoTon = new Produksi();
+        
+         //Cost Inti
+         Cost inti = new Cost();
+         inti.setPeriodActual(query.getTonaseCpoInti(periodeTahun, true));
+         inti.setPeriodPrvActual(query.getTonaseCpoInti(periodeTahun-1, true));        
+         inti.setYearActual(query.getTonaseCpoInti(periodeTahun, false));
+         inti.setYearPrvActual(query.getTonaseCpoInti(periodeTahun-1, false));
+         
+         //Cost Plasma
+         Cost plasma = new Cost();
+         plasma.setPeriodActual(query.getTonaseCpoPlasma(periodeTahun, true));
+         plasma.setPeriodPrvActual(query.getTonaseCpoPlasma(periodeTahun-1, true));        
+         plasma.setYearActual(query.getTonaseCpoPlasma(periodeTahun, false));
+         plasma.setYearPrvActual(query.getTonaseCpoPlasma(periodeTahun-1, false));
+         
+         
+       cpoTon.setInti(inti);
+       cpoTon.setPlasma(plasma);
+       cpoTon.setPihak3(new Cost());
+       
+       return cpoTon;
+    }
+    
+    private Kernel getQtyPk(){
+        
+        //QTy TbsOlah
+        Cost prodPk = getQtyProduksiPk();        
+          
+        //Qty Rendemen PK      
+        Cost rendemenPk = new Cost();
+        rendemenPk.setPeriodActual(query.getTonaseRendemenPk(periodeTahun, true));
+        rendemenPk.setPeriodPrvActual(query.getTonaseRendemenPk(periodeTahun-1, true));        
+        rendemenPk.setYearActual(query.getTonaseRendemenPk(periodeTahun, false));
+        rendemenPk.setYearPrvActual(query.getTonaseRendemenPk(periodeTahun-1, false));
+        
+        //Qty Produksi CPO
+        Kernel pk = new Kernel(prodPk, rendemenPk);
+        
+        return pk;
+         
+    }
+    
+    
+    private Cost getQtyProduksiPk(){
+        
+        //Produksi CPO (Ton)
+        Produksi prodPk = new Produksi();
+        
+         //Cost Inti
+         Cost inti = new Cost();
+         inti.setPeriodActual(query.getTonasePkTbsInti(periodeTahun, true));
+         inti.setPeriodPrvActual(query.getTonasePkTbsInti(periodeTahun-1, true));        
+         inti.setYearActual(query.getTonasePkTbsInti(periodeTahun, false));
+         inti.setYearPrvActual(query.getTonasePkTbsInti(periodeTahun-1, false));
+         
+         //Cost Plasma
+         Cost plasma = new Cost();
+         plasma.setPeriodActual(query.getTonasePkTbsPlasma(periodeTahun, true));
+         plasma.setPeriodPrvActual(query.getTonasePkTbsPlasma(periodeTahun-1, true));        
+         plasma.setYearActual(query.getTonasePkTbsPlasma(periodeTahun, false));
+         plasma.setYearPrvActual(query.getTonasePkTbsPlasma(periodeTahun-1, false));
+         
+         
+       prodPk.setInti(inti);
+       prodPk.setPlasma(plasma);
+       prodPk.setPihak3(new Cost());
+       
+       return prodPk;
     }
     
 }
