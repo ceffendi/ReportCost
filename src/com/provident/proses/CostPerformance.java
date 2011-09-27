@@ -6,6 +6,8 @@ import com.provident.model.Produksi;
 import com.provident.model.biaya.BiayaProdLangsung;
 import com.provident.model.biaya.BiayaProdTdkLangsung;
 import com.provident.model.biaya.BiayaRawatTanam;
+import com.provident.model.biaya.TotalBiayaAll;
+import com.provident.model.biaya.TotalBiayaProd;
 import com.provident.model.produksi.Cpo;
 import com.provident.model.produksi.Kernel;
 import java.io.IOException;
@@ -66,6 +68,16 @@ public class CostPerformance {
         //Biaya Prod Tdk Langsung
         Cost biayaProdTdkLangsung = getBiayaProduksiTidakLangsung();
         
+        //Biaya Pembelian TBS Luar
+        Cost biayaBeliTbsLuar = getBiayaPembelianTbsLuar();
+        
+        //Biaya Total Produksi
+        Cost totalBiayaProd = new TotalBiayaProd(biayaProdLangsung, biayaProdTdkLangsung);
+        
+        //Biaya Total All
+        Cost totalBiayaAll = new TotalBiayaAll(totalBiayaProd, biayaBeliTbsLuar);
+        
+        // =======================================================
         
         //Produksi Kebun CPO
         Cpo cpo = getQtyProduksiCpoHead();
@@ -73,11 +85,14 @@ public class CostPerformance {
         //Produksi Kebun PK (Kernel)
         Kernel kernel = getQtyPk();
         
+        // Produksi TBS Terima
+        Cost tbsTerima = getQtyProduksiTbsTerima();
+        
                
         Map beans = new HashMap();
 
         // Buat Produksi Tonase Kebun
-//        beans.put("ptb", prodTbs);
+        beans.put("ptb", tbsTerima);
 //        beans.put("hk", hektarTanam);
         beans.put("cpo", cpo);
         beans.put("pk", kernel);
@@ -86,9 +101,9 @@ public class CostPerformance {
         // Buat Biaya Produksi - mapping
         beans.put("pl", biayaProdLangsung);
         beans.put("ptl", biayaProdTdkLangsung);
-//        beans.put("tbs", tbsLuar);
-//        beans.put("totProd", totalBiayaProduksi);
-//        beans.put("totProdAndTbs", totalBiayaAll);
+        beans.put("tbs", biayaBeliTbsLuar);
+        beans.put("totProd", totalBiayaProd);
+        beans.put("totProdAndTbs", totalBiayaAll);
 
         //Organisasi
         beans.put("org", organisasi);
@@ -147,12 +162,38 @@ public class CostPerformance {
         Cost rawatTanam = getBiayaRawatTanam();
         
         //Cost Infra
-        
+        Cost infra = new Cost();
+        infra.setPeriodActual(query.getCostInfra(periodeTahun, true));
+        infra.setPeriodPrvActual(query.getCostInfra(periodeTahun-1, true));        
+        infra.setYearActual(query.getCostInfra(periodeTahun, false));
+        infra.setYearPrvActual(query.getCostInfra(periodeTahun-1, false));
         
         //Cost Biaya Prod Tdk Langsung
-        Cost biayaProdTdkLangsung = new BiayaProdTdkLangsung(sisipSawit, new Cost(), rawatTanam, new Cost(), new Cost());
+        Cost biayaProdTdkLangsung = new BiayaProdTdkLangsung(sisipSawit, infra, rawatTanam, new Cost(), new Cost());
         
         return biayaProdTdkLangsung;
+    }
+    
+    private Cost getBiayaPembelianTbsLuar(){
+        
+        //Cost Plasma
+        Cost plasma = new Cost();
+        plasma.setPeriodActual(query.getCostTbsLuarPlasma(periodeTahun, true));
+        plasma.setPeriodPrvActual(query.getCostTbsLuarPlasma(periodeTahun - 1, true));
+        plasma.setYearActual(query.getCostTbsLuarPlasma(periodeTahun, false));
+        plasma.setYearPrvActual(query.getCostTbsLuarPlasma(periodeTahun - 1, false));
+
+        //Cost Pihak 3
+        Cost pihak3 = new Cost();
+        pihak3.setPeriodActual(query.getCostTbsLuarPihak3(periodeTahun, true));
+        pihak3.setPeriodPrvActual(query.getCostTbsLuarPihak3(periodeTahun - 1, true));
+        pihak3.setYearActual(query.getCostTbsLuarPihak3(periodeTahun, false));
+        pihak3.setYearPrvActual(query.getCostTbsLuarPihak3(periodeTahun - 1, false));
+        
+        //Cost Biaya Pembelian TBS Luar
+        Cost biayaTbsLuar = new Produksi(plasma, pihak3);
+        
+        return biayaTbsLuar;
     }
     
     
@@ -165,8 +206,24 @@ public class CostPerformance {
         tngKerja.setYearActual(query.getCostTenagaKerja(periodeTahun, false));
         tngKerja.setYearPrvActual(query.getCostTenagaKerja(periodeTahun-1, false));
         
+        //Cost Pupuk
+        Cost pupuk = new Cost();
+        pupuk.setPeriodActual(query.getCostPupuk(periodeTahun, true));
+        pupuk.setPeriodPrvActual(query.getCostPupuk(periodeTahun-1, true));        
+        pupuk.setYearActual(query.getCostPupuk(periodeTahun, false));
+        pupuk.setYearPrvActual(query.getCostPupuk(periodeTahun-1, false));
+        
+        
+        //Cost Material & Biaya Lain
+        Cost biayaLain = new Cost();
+        biayaLain.setPeriodActual(query.getCostTanamLain(periodeTahun, true));
+        biayaLain.setPeriodPrvActual(query.getCostTanamLain(periodeTahun-1, true));        
+        biayaLain.setYearActual(query.getCostTanamLain(periodeTahun, false));
+        biayaLain.setYearPrvActual(query.getCostTanamLain(periodeTahun-1, false));
+        
+        
         //Cost Biaya Rawat Tanam TM
-        Cost biayaRawatTanam = new BiayaRawatTanam(tngKerja, new Cost(), new Cost());
+        Cost biayaRawatTanam = new BiayaRawatTanam(tngKerja, pupuk, biayaLain);
         
         return biayaRawatTanam;
     }
@@ -274,7 +331,6 @@ public class CostPerformance {
          
     }
     
-    
     private Cost getQtyProduksiPk(){
         
         //Produksi CPO (Ton)
@@ -300,6 +356,33 @@ public class CostPerformance {
        prodPk.setPihak3(new Cost());
        
        return prodPk;
+    }
+    
+    private Cost getQtyProduksiTbsTerima(){
+        
+        //Produksi CPO (Ton)
+        Produksi tbsTerima = new Produksi();
+        
+         //Cost Inti
+         Cost inti = new Cost();
+         inti.setPeriodActual(query.getTonaseTbsTerimaInti(periodeTahun, true));
+         inti.setPeriodPrvActual(query.getTonaseTbsTerimaInti(periodeTahun-1, true));        
+         inti.setYearActual(query.getTonaseTbsTerimaInti(periodeTahun, false));
+         inti.setYearPrvActual(query.getTonaseTbsTerimaInti(periodeTahun-1, false));
+         
+         //Cost Plasma
+         Cost plasma = new Cost();
+         plasma.setPeriodActual(query.getTonaseTbsTerimaPlasma(periodeTahun, true));
+         plasma.setPeriodPrvActual(query.getTonaseTbsTerimaPlasma(periodeTahun-1, true));        
+         plasma.setYearActual(query.getTonaseTbsTerimaPlasma(periodeTahun, false));
+         plasma.setYearPrvActual(query.getTonaseTbsTerimaPlasma(periodeTahun-1, false));
+         
+         
+       tbsTerima.setInti(inti);
+       tbsTerima.setPlasma(plasma);
+       tbsTerima.setPihak3(new Cost());
+       
+       return tbsTerima;
     }
     
 }

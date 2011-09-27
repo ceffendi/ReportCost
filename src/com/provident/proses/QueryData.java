@@ -196,6 +196,92 @@ public class QueryData {
         return decimalPoint(nilai);
     }
     
+    public double getCostPupuk(int tahun, boolean isPeriodic) {
+        PreparedStatement psmt = null;
+        ResultSet rs = null;
+        double nilai = 0;
+        String sql = null;
+
+        try {
+            if (isPeriodic) {
+                sql = "SELECT COSTS_RAWATTNMTMPUPUK "
+                        + "FROM MART_COSTS_RAWATTNMTMPUPUK "
+                        + "WHERE TAHUN=? AND BULAN=? AND COMPANY=?";
+            } else {
+                sql = "SELECT SUM(COSTS_RAWATTNMTMPUPUK) "
+                        + "FROM MART_COSTS_RAWATTNMTMPUPUK "
+                        + "WHERE TAHUN =? AND BULAN <=? AND COMPANY=?";
+            }
+
+            psmt = connection.prepareStatement(sql);
+            psmt.setInt(1, tahun);
+            psmt.setString(2, putZero(periodeBulan));
+            psmt.setString(3, inisialPerusahaan);
+
+            rs = psmt.executeQuery();
+
+            while (rs.next()) {
+                nilai = rs.getDouble(1);
+            }
+
+        } catch (SQLException ex) {
+            log.error(ex.getMessage(), ex);
+        } finally {
+            try {
+                psmt.close();
+                rs.close();
+            } catch (SQLException ex) {
+                log.error(ex.getMessage(), ex);
+            }
+            psmt = null;
+            rs = null;
+        }
+        return decimalPoint(nilai);
+    }
+    
+    public double getCostTanamLain(int tahun, boolean isPeriodic) {
+        PreparedStatement psmt = null;
+        ResultSet rs = null;
+        double nilai = 0;
+        String sql = null;
+
+        try {
+            if (isPeriodic) {
+                sql = "SELECT COSTS_RAWATTNMTMLAIN "
+                        + "FROM MART_COSTS_RAWATTNMTMLAIN "
+                        + "WHERE TAHUN=? AND BULAN=? AND COMPANY=?";
+            } else {
+                sql = "SELECT SUM(COSTS_RAWATTNMTMLAIN) "
+                        + "FROM MART_COSTS_RAWATTNMTMLAIN "
+                        + "WHERE TAHUN =? AND BULAN <=? AND COMPANY=?";
+            }
+
+            psmt = connection.prepareStatement(sql);
+            psmt.setInt(1, tahun);
+            psmt.setString(2, putZero(periodeBulan));
+            psmt.setString(3, inisialPerusahaan);
+
+            rs = psmt.executeQuery();
+
+            while (rs.next()) {
+                nilai = rs.getDouble(1);
+            }
+
+        } catch (SQLException ex) {
+            log.error(ex.getMessage(), ex);
+        } finally {
+            try {
+                psmt.close();
+                rs.close();
+            } catch (SQLException ex) {
+                log.error(ex.getMessage(), ex);
+            }
+            psmt = null;
+            rs = null;
+        }
+        return decimalPoint(nilai);
+    }
+    
     public double getCostSisipSawit(int tahun, boolean isPeriodic) {
         PreparedStatement psmt = null;
         ResultSet rs = null;
@@ -210,6 +296,135 @@ public class QueryData {
             } else {
                 sql = "SELECT SUM(COSTS_SISIPSAWITTM) "
                         + "FROM MART_COSTS_SISIPSAWITTM "
+                        + "WHERE TAHUN =? AND BULAN <=? AND COMPANY=?";
+            }
+
+            psmt = connection.prepareStatement(sql);
+            psmt.setInt(1, tahun);
+            psmt.setString(2, putZero(periodeBulan));
+            psmt.setString(3, inisialPerusahaan);
+
+            rs = psmt.executeQuery();
+
+            while (rs.next()) {
+                nilai = rs.getDouble(1);
+            }
+
+        } catch (SQLException ex) {
+            log.error(ex.getMessage(), ex);
+        } finally {
+            try {
+                psmt.close();
+                rs.close();
+            } catch (SQLException ex) {
+                log.error(ex.getMessage(), ex);
+            }
+            psmt = null;
+            rs = null;
+        }
+        return decimalPoint(nilai);
+    }
+    
+    public double getCostInfra(int tahun, boolean isPeriodic) {
+        PreparedStatement psmt = null;
+        ResultSet rs = null;
+        double nilai = 0;
+        String sql = null;
+
+        try {
+            if (isPeriodic) {
+                sql = "SELECT COSTS_RAWATINFRAS "
+                        + "FROM MART_COSTS_RAWATINFRAS "
+                        + "WHERE TAHUN=? AND BULAN=? AND COMPANY=?";
+            } else {
+                sql = "SELECT SUM(COSTS_RAWATINFRAS) "
+                        + "FROM MART_COSTS_RAWATINFRAS "
+                        + "WHERE TAHUN =? AND BULAN <=? AND COMPANY=?";
+            }
+
+            psmt = connection.prepareStatement(sql);
+            psmt.setInt(1, tahun);
+            psmt.setString(2, putZero(periodeBulan));
+            psmt.setString(3, inisialPerusahaan);
+
+            rs = psmt.executeQuery();
+
+            while (rs.next()) {
+                nilai = rs.getDouble(1);
+            }
+
+        } catch (SQLException ex) {
+            log.error(ex.getMessage(), ex);
+        } finally {
+            try {
+                psmt.close();
+                rs.close();
+            } catch (SQLException ex) {
+                log.error(ex.getMessage(), ex);
+            }
+            psmt = null;
+            rs = null;
+        }
+        return decimalPoint(nilai);
+    }
+    
+    public double getCostTbsLuarPlasma(int tahun, boolean isPeriodic) {
+        PreparedStatement psmt = null;
+        ResultSet rs = null;
+        double nilai = 0;
+        String sql = null;
+
+        try {
+            if (isPeriodic) {
+                sql = "SELECT COSTS_BELITBSPLASMA "
+                        + "FROM MART_COSTS_BELITBSPLASMA "
+                        + "WHERE TAHUN=? AND BULAN=? AND COMPANY=?";
+            } else {
+                sql = "SELECT SUM(COSTS_BELITBSPLASMA) "
+                        + "FROM MART_COSTS_BELITBSPLASMA "
+                        + "WHERE TAHUN =? AND BULAN <=? AND COMPANY=?";
+            }
+
+            psmt = connection.prepareStatement(sql);
+            psmt.setInt(1, tahun);
+            psmt.setString(2, putZero(periodeBulan));
+            psmt.setString(3, inisialPerusahaan);
+
+            rs = psmt.executeQuery();
+
+            while (rs.next()) {
+                nilai = rs.getDouble(1);
+            }
+
+        } catch (SQLException ex) {
+            log.error(ex.getMessage(), ex);
+        } finally {
+            try {
+                psmt.close();
+                rs.close();
+            } catch (SQLException ex) {
+                log.error(ex.getMessage(), ex);
+            }
+            psmt = null;
+            rs = null;
+        }
+        return decimalPoint(nilai);
+    }
+    
+    public double getCostTbsLuarPihak3(int tahun, boolean isPeriodic) {
+        PreparedStatement psmt = null;
+        ResultSet rs = null;
+        double nilai = 0;
+        String sql = null;
+
+        try {
+            if (isPeriodic) {
+                sql = "SELECT COSTS_BELITBSPIHAK3 "
+                        + "FROM MART_COSTS_BELITBSPIHAK3 "
+                        + "WHERE TAHUN=? AND BULAN=? AND COMPANY=?";
+            } else {
+                sql = "SELECT SUM(COSTS_BELITBSPIHAK3) "
+                        + "FROM MART_COSTS_BELITBSPIHAK3 "
                         + "WHERE TAHUN =? AND BULAN <=? AND COMPANY=?";
             }
 
@@ -598,6 +813,93 @@ public class QueryData {
             } else {
                 sql = "SELECT SUM(QTY_RENDEMENPK) "
                         + "FROM MART_QTY_RENDEMENPK "
+                        + "WHERE TAHUN =? AND BULAN <=? AND COMPANY=?";
+            }
+
+            psmt = connection.prepareStatement(sql);
+            psmt.setInt(1, tahun);
+            psmt.setString(2, putZero(periodeBulan));
+            psmt.setString(3, inisialPerusahaan);
+
+            rs = psmt.executeQuery();
+
+            while (rs.next()) {
+                nilai = rs.getDouble(1);
+            }
+
+        } catch (SQLException ex) {
+            log.error(ex.getMessage(), ex);
+        } finally {
+            try {
+                psmt.close();
+                rs.close();
+            } catch (SQLException ex) {
+                log.error(ex.getMessage(), ex);
+            }
+            psmt = null;
+            rs = null;
+        }
+        return decimalPoint2(nilai);
+    }
+    
+    public double getTonaseTbsTerimaInti(int tahun, boolean isPeriodic) {
+        PreparedStatement psmt = null;
+        ResultSet rs = null;
+        double nilai = 0;
+        String sql = null;
+
+        try {
+            if (isPeriodic) {
+                sql = "SELECT QTY_TBSTERIMAINTI "
+                        + "FROM MART_QTY_TBSTERIMAINTI "
+                        + "WHERE TAHUN=? AND BULAN=? AND COMPANY=?";
+            } else {
+                sql = "SELECT SUM(QTY_TBSTERIMAINTI) "
+                        + "FROM MART_QTY_TBSTERIMAINTI "
+                        + "WHERE TAHUN =? AND BULAN <=? AND COMPANY=?";
+            }
+
+            psmt = connection.prepareStatement(sql);
+            psmt.setInt(1, tahun);
+            psmt.setString(2, putZero(periodeBulan));
+            psmt.setString(3, inisialPerusahaan);
+
+            rs = psmt.executeQuery();
+
+            while (rs.next()) {
+                nilai = rs.getDouble(1);
+            }
+
+        } catch (SQLException ex) {
+            log.error(ex.getMessage(), ex);
+        } finally {
+            try {
+                psmt.close();
+                rs.close();
+            } catch (SQLException ex) {
+                log.error(ex.getMessage(), ex);
+            }
+            psmt = null;
+            rs = null;
+        }
+        return decimalPoint2(nilai);
+    }
+    
+    
+    public double getTonaseTbsTerimaPlasma(int tahun, boolean isPeriodic) {
+        PreparedStatement psmt = null;
+        ResultSet rs = null;
+        double nilai = 0;
+        String sql = null;
+
+        try {
+            if (isPeriodic) {
+                sql = "SELECT QTY_TBSTERIMAPLASMA "
+                        + "FROM MART_QTY_TBSTERIMAPLASMA "
+                        + "WHERE TAHUN=? AND BULAN=? AND COMPANY=?";
+            } else {
+                sql = "SELECT SUM(QTY_TBSTERIMAPLASMA) "
+                        + "FROM MART_QTY_TBSTERIMAPLASMA "
                         + "WHERE TAHUN =? AND BULAN <=? AND COMPANY=?";
             }
 
